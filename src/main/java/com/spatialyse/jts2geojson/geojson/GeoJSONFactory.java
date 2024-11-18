@@ -1,4 +1,4 @@
-package org.wololo.geojson;
+package com.spatialyse.jts2geojson.geojson;
 
 import java.io.IOException;
 import java.util.Map;
@@ -8,6 +8,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spatialyse.geojson.Feature;
+import com.spatialyse.geojson.FeatureCollection;
+import com.spatialyse.geojson.GeoJSON;
+import com.spatialyse.geojson.Geometry;
 
 public class GeoJSONFactory {
     private static final ObjectMapper mapper = new ObjectMapper();

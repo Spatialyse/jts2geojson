@@ -1,6 +1,9 @@
-package org.wololo.jts2geojson;
+package com.spatialyse.jts2geojson;
 
-import org.wololo.geojson.*;
+import com.spatialyse.geojson.*;
+import com.spatialyse.jts2geojson.geojson.GeoJSONFactory;
+
+import java.util.List;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -57,10 +60,10 @@ public class GeoJSONReader {
     }
 
     Geometry convert(MultiLineString multiLineString, GeometryFactory factory) {
-        var size = multiLineString.getCoordinates().length;
+        var size = multiLineString.getCoordinates().size();
         var lineStrings = new org.locationtech.jts.geom.LineString[size];
         for (int i = 0; i < size; i++)
-            lineStrings[i] = factory.createLineString(convert(multiLineString.getCoordinates()[i]));
+            lineStrings[i] = factory.createLineString(convert(multiLineString.getCoordinates().get(i)));
         return factory.createMultiLineString(lineStrings);
     }
 
@@ -68,13 +71,13 @@ public class GeoJSONReader {
         return convertToPolygon(polygon.getCoordinates(), factory);
     }
 
-    org.locationtech.jts.geom.Polygon convertToPolygon(double[][][] coordinates, GeometryFactory factory) {
-        var shell = factory.createLinearRing(convert(coordinates[0]));
-        if (coordinates.length > 1) {
-            var size = coordinates.length - 1;
+    org.locationtech.jts.geom.Polygon convertToPolygon(List<double[][]>coordinates, GeometryFactory factory) {
+        var shell = factory.createLinearRing(convert(coordinates.get(0)));
+        if (coordinates.size() > 1) {
+            var size = coordinates.size() - 1;
             var holes = new LinearRing[size];
             for (var i = 0; i < size; i++)
-                holes[i] = factory.createLinearRing(convert(coordinates[i + 1]));
+                holes[i] = factory.createLinearRing(convert(coordinates.get(i + 1)));
             return factory.createPolygon(shell, holes);
         } else {
             return factory.createPolygon(shell);
@@ -82,10 +85,10 @@ public class GeoJSONReader {
     }
 
     Geometry convert(MultiPolygon multiPolygon, GeometryFactory factory) {
-        var size = multiPolygon.getCoordinates().length;
+        var size = multiPolygon.getCoordinates().size();
         var polygons = new org.locationtech.jts.geom.Polygon[size];
         for (int i = 0; i < size; i++)
-            polygons[i] = convertToPolygon(multiPolygon.getCoordinates()[i], factory);
+            polygons[i] = convertToPolygon(multiPolygon.getCoordinates().get(i), factory);
         return factory.createMultiPolygon(polygons);
     }
 
